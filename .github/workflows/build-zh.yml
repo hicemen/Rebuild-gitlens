@@ -1,0 +1,175 @@
+name: Fix gitlens and build
+
+on:
+    schedule:
+        - cron: '0 0 * * *'
+    workflow_dispatch:
+        inputs:
+            version:
+                description: 'Release version (e.g., v17.8.1). Leave empty for latest'
+                required: false
+                type: string
+
+jobs:
+    sync-release:
+        name: Sync Release
+        runs-on: ubuntu-latest
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        permissions:
+            contents: write
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '22'
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v3
+              with:
+                  version: 10
+
+            - name: Check if tag exists locally
+              id: check_tag
+              run: |
+                  if [ -n "${{ github.event.inputs.version }}" ]; then
+                      VERSION="${{ github.event.inputs.version }}"
+                  else
+                      VERSION=$(curl -s https://api.github.com/repos/gitkraken/vscode-gitlens/releases/latest | grep '"tag_name":' | cut -d'"' -f4)
+                      echo "Latest version: $VERSION"
+                  fi
+                  echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+                  if git rev-parse "$VERSION"+"_zh" >/dev/null 2>&1; then
+                      echo "Tag exists, skipping..."
+                      echo "exists=true" >> $GITHUB_OUTPUT
+                  else
+                      echo "exists=false" >> $GITHUB_OUTPUT
+                  fi
+
+            - name: Exit if tag exists
+              if: steps.check_tag.outputs.exists == 'true'
+              run: |
+                  echo "Tag ${{ env.VERSION }} already exists, exiting."
+                  exit 0
+
+            - name: Fetch upstream release
+              run: |
+                  git fetch https://github.com/gitkraken/vscode-gitlens.git refs/tags/${{ env.VERSION }}:refs/tags/${{ env.VERSION }} --depth=1
+
+            - name: Checkout upstream release
+              run: |
+                  git checkout ${{ env.VERSION }}
+
+            - name: 拉取patches
+              uses: actions/checkout@v4
+              with:
+                  repository: ${{ github.repository }}
+                  path: source-repo
+                  sparse-checkout: |
+                    patches
+                    scripts
+                  sparse-checkout-cone-mode: false
+
+            - name: Apply patches
+              run: |
+                  echo "Applying patches..."
+                  for patch in source-repo/patches/*.patch; do
+                      if [ -f "$patch" ]; then
+                          echo "Applying patch: $patch"
+                          git apply "$patch" || echo "Failed to apply $patch"
+                      fi
+                  done
+          
+            - name: Set up Python
+              uses: actions/setup-python@v5
+              with:
+                python-version: '3.10'
+                cache: 'pip'
+
+            - name: Install dependencies
+              run: |
+                python -m pip install --upgrade pip
+                pip install requests
+
+            - name: Check if translation is needed
+              id: check
+              run: |
+                echo "检查文件是否存在..."
+                if [ -f "vscode-gitlens/contributions.json" ] && [ -f "vscode-gitlens/package.json" ]; then
+                  echo "需要翻译的文件已找到 (vscode-gitlens/)"
+                elif [ -f "contributions.json" ] && [ -f "package.json" ]; then
+                  echo "需要翻译的文件已找到 (根目录)"
+                else
+                  echo "错误: 文件不存在"
+                  exit 1
+                fi
+            
+            - name: Run translation script
+              id: translate
+              run: |
+                echo "开始翻译文件..."
+                python3 source-repo/translate.py --key DEEPSEEK_API_KEY
+              
+            - name: Remove source-repo
+              run: |
+                  rm -rf source-repo
+
+            - name: Check for changes
+              id: changes
+              run: |
+                if git diff --quiet; then
+                  echo "没有翻译变更"
+                  echo "has_changes=false" >> $GITHUB_OUTPUT
+                else
+                  echo "检测到翻译变更"
+                  echo "has_changes=true" >> $GITHUB_OUTPUT
+                  git diff --stat
+                fi
+
+            - name: Commit and push changes
+              if: ${{ steps.changes.outputs.has_changes == 'true' }}
+              run: |
+                git config user.name "github-actions[bot]"
+                git config user.email "github-actions[bot]@users.noreply.github.com"
+                
+                git add translation_dictionary.json
+                
+                git status
+                git commit -m "docs: Update translations ($(date '+%Y-%m-%d %H:%M:%S'))"
+                git push
+                
+              shell: bash
+
+            - name: Install dependencies
+              run: pnpm install
+
+            - name: Package extension
+              run: pnpm package
+
+            - name: Get package name
+              run: |
+                  echo "PACKAGE_NAME=$(node -e "console.log(require('./package.json').name + '-' + require('./package.json').version + '_zh.vsix')")" >> $GITHUB_ENV
+                  echo "PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version)")" >> $GITHUB_ENV
+                  
+            - name: Generate Changelog
+              id: changelog
+              uses: mindsers/changelog-reader-action@v2
+              with:
+                  version: ${{ env.PACKAGE_VERSION }}
+                  path: ./CHANGELOG.md
+
+            - name: Create GitHub release
+              uses: softprops/action-gh-release@v2
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+              with:
+                  tag_name: ${{ env.VERSION }}_zh
+                  name: GitLens ${{ env.PACKAGE_VERSION }} zh
+                  body: ${{ steps.changelog.outputs.changes }}
+                  draft: false
+                  prerelease: false
+                  files: ./${{ env.PACKAGE_NAME }}
