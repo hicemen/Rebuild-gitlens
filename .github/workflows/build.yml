@@ -58,23 +58,6 @@ jobs:
               run: |
                   git fetch https://github.com/gitkraken/vscode-gitlens.git refs/tags/${{ env.VERSION }}:refs/tags/${{ env.VERSION }} --depth=1
 
-            - name: Get release info from upstream
-              id: release_info
-              uses: actions/github-script@v7
-              with:
-                  result-encoding: json
-                  script: |
-                      const { data: release } = await github.rest.repos.getReleaseByTag({
-                          owner: 'gitkraken',
-                          repo: 'vscode-gitlens',
-                          tag: '${{ env.VERSION }}'
-                      });
-                      return {
-                          body: release.body,
-                          name: release.name,
-                          html_url: release.html_url
-                      };
-
             - name: Checkout upstream release
               run: |
                   git checkout ${{ env.VERSION }}
@@ -107,12 +90,6 @@ jobs:
               with:
                   tag_name: ${{ env.VERSION }}
                   name: GitLens ${{ env.PACKAGE_VERSION }}
-                  body: |
-                      **Changes in this release:**
-
-                      ${{ steps.release_info.result.body }}
-
-                      **Download:** [VSIX Package](https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/${{ env.PACKAGE_NAME }})
                   draft: false
                   prerelease: false
                   files: ./${{ env.PACKAGE_NAME }}
