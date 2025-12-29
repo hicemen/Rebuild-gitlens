@@ -2,15 +2,16 @@
 
 自动同步并打包 [gitkraken/vscode-gitlens](https://github.com/gitkraken/vscode-gitlens) 最新 release 版本的工作流。
 
+一个便于个人使用及测试的自动编译环境
+
 ---
 
 ## 功能特性
 
 - 支持手动指定版本或自动获取最新版本
 - 自动检测本地是否已存在对应 tag，避免重复打包
-- 自动应用 `patches/` 目录下的所有补丁文件
 - 自动安装依赖并打包生成 vsix 安装包
-- 自动创建 GitHub Release，包含原始变更日志
+- 自动创建 GitHub Release，包含变更日志
 
 ## 触发方式
 
@@ -46,10 +47,9 @@ schedule:
 3. **代码获取** - 从上游仓库 `gitkraken/vscode-gitlens` 拉取指定版本的代码
 4. **Release 信息** - 获取上游 release 的变更日志
 5. **代码检出** - 切换到指定版本的代码状态
-6. **应用补丁** - 自动应用 `patches/` 目录下所有 `.patch` 文件
-7. **依赖安装** - 执行 `pnpm install` 安装项目依赖
-8. **打包构建** - 执行 `pnpm package` 生成 vsix 安装包
-9. **发布 Release** - 在当前仓库创建对应版本的 GitHub Release，上传 vsix 文件
+6. **依赖安装** - 执行 `pnpm install` 安装项目依赖
+7. **打包构建** - 执行 `pnpm package` 生成 vsix 安装包
+8. **发布 Release** - 在当前仓库创建对应版本的 GitHub Release，上传 vsix 文件
 
 ## 目录结构要求
 
@@ -58,10 +58,6 @@ schedule:
 ├── .github/
 │   └── workflows/
 │       └── build.yml
-├── patches/
-│   ├── fix-subscription.patch
-│   ├── fix-checkin.patch
-│   └── ...
 └── package.json
 ```
 
@@ -73,7 +69,6 @@ schedule:
 ## 注意事项
 
 1. **版本格式** - 输入的版本号必须以 `v` 开头，且为有效的语义化版本号
-2. **补丁兼容性** - 确保 `patches/` 目录下的补丁文件与目标版本兼容
 
 ## 示例
 
