@@ -62,7 +62,7 @@ jobs:
               run: |
                   git checkout ${{ env.VERSION }}
 
-            - name: 拉取locales和patches
+            - name: 拉取patches
               uses: actions/checkout@v4
               with:
                   repository: ${{ github.repository }}
@@ -80,6 +80,10 @@ jobs:
                           git apply "$patch" || echo "Failed to apply $patch"
                       fi
                   done
+
+            - name: Remove source-repo
+              run: |
+                  rm -rf source-repo
 
             - name: Install dependencies
               run: pnpm install
